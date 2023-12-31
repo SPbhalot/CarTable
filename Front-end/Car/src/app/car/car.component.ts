@@ -103,6 +103,7 @@ export class CarComponent  implements OnInit {
         };
       this.carService.addCar(newCar).subscribe(
         (addedCar) => {
+          this.carForm.reset();
           this.fetchCars();
           this.isNewRowAdd=false;
         },
