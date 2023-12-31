@@ -1,0 +1,113 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+       Car Models
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content scrollX="true" scrollY="true" class="scroll-content">
+  <ion-row>
+    <ion-col class="text-end">
+      <ion-button shape="round" fill="outline" (click)="addRow()">{{'Add Car'}}</ion-button>
+    </ion-col>
+  </ion-row>
+  <ng-container>
+    <table class="ion-table table table-striped">
+      <thead>
+        <tr class="table-primary">
+          <th scope="col" *ngFor="let header of tableHeaders">{{ header }}</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="tableData.length>0 ;else noDataTemplate ">
+          <tr *ngFor="let row of pagedTableData; let i = index">
+            <td *ngFor="let header of tableHeaders">
+              <ng-container *ngIf="!row.editable; else editTemplate">
+                <span *ngIf="header === 'beginDate' || header === 'endDate'; else defaultText">
+                  {{ row[header] | date:'medium' }}
+                </span>
+                <ng-template #defaultText>{{ row[header] }}</ng-template>
+              </ng-container>
+              <ng-template #editTemplate>
+                <span *ngIf="header === 'beginDate' || header === 'endDate'; else Input">
+                  <ion-item class="w-100">
+                    <ion-input type="date" [(ngModel)]="row[header]"></ion-input>
+                  </ion-item>
+                </span>
+                <ng-template #Input>
+                  <span *ngIf="header === 'color';else default ">
+                    <ion-item>
+                      <ion-select [(ngModel)]="row[header]">
+                        <ion-select-option value="red">Red</ion-select-option>
+                        <ion-select-option value="blue">Blue</ion-select-option>
+                        <ion-select-option value="green">Green</ion-select-option>
+                        <ion-select-option value="yellow">Yellow</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                  </span>
+                  <ng-template #default>
+                    <ion-item class="w-100">
+                      <ion-input aria-label [(ngModel)]="row[header]"
+                        [readonly]="header === 'carNo' || !row.editable"></ion-input>
+                    </ion-item>
+                  </ng-template>
+
+                </ng-template>
+
+              </ng-template>
+            </td>
+            <td class="d-flex">
+              <ion-button fill="outline" size="small" (click)="editRow(row)">
+                {{ row.editable ? 'Save' : 'Edit' }}
+              </ion-button>
+              <ion-button size="small" color="danger" expand="block" (click)="deleteRow(i,row)">Delete</ion-button>
+            </td>
+          </tr>
+        </ng-container>
+        <tr *ngIf="isNewRowAdd">
+          <td *ngFor="let x of tableHeaders" [formGroup]="carForm">
+            <ng-template #selection>
+              <ion-item *ngIf="x=='color'else default ">
+                <ion-select [formControlName]="x">
+                  <ion-select-option value="Red">Red</ion-select-option>
+                  <ion-select-option value="Blue">Blue</ion-select-option>
+                  <ion-select-option value="Green">Green</ion-select-option>
+                  <ion-select-option value="Yellow">Yellow</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ng-template #default>
+                <ion-item class="w-100">
+                  <ion-input *ngIf="x!='carNo'" [formControlName]="x"></ion-input>
+                  <ion-input *ngIf="x=='carNo'" [readonly]="x == 'carNo'" [(ngModel)]="tableData.length"
+                    [formControlName]="x"></ion-input>
+                </ion-item>
+              </ng-template>
+            </ng-template>
+            <ion-item class="w-100" *ngIf="x === 'beginDate' || x === 'endDate'; else selection">
+              <ion-input type="date" [formControlName]="x"></ion-input>
+            </ion-item>
+            <ng-container *ngIf="carForm.get(x).hasError('required') && carForm.get(x).touched">
+              <div class="validation-error">required.</div>
+            </ng-container>
+          </td>
+          <td class="d-flex" (click)="SaveForm()">
+            <ion-button fill="outline" size="small">
+              {{ 'Save' }}
+            </ion-button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <mat-paginator [length]="tableData.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
+      (page)="pageChanged($event)"></mat-paginator>
+  </ng-container>
+  <ng-template #noDataTemplate>
+    <ion-row>
+      <ion-col flex="true" class="ion-justify-content-center ion-align-items-center" class="">
+        <ion-label>No data available</ion-label>
+      </ion-col>
+    </ion-row>
+  </ng-template>
+</ion-content>

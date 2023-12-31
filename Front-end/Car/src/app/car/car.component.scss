@@ -1,0 +1,10 @@
+.scroll-content {
+    max-height: 100vh; /* Adjust the value as needed */
+    max-width: 100vw;  /* Adjust the value as needed */
+    overflow: auto;
+  }
+  .validation-error {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
