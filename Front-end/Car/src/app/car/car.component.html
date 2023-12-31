@@ -80,7 +80,7 @@
               <ng-template #default>
                 <ion-item class="w-100">
                   <ion-input *ngIf="x!='carNo'" [formControlName]="x"></ion-input>
-                  <ion-input *ngIf="x=='carNo'" [readonly]="x == 'carNo'" [(ngModel)]="tableData.length"
+                  <ion-input *ngIf="x=='carNo'" [readonly]="x == 'carNo'" [(ngModel)]="tableData.length?tableData.length:0"
                     [formControlName]="x"></ion-input>
                 </ion-item>
               </ng-template>
